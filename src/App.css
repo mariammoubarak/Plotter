@@ -1,0 +1,27 @@
+.App {
+  text-align: center;
+  display: flex; 
+  padding: auto;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5%;
+}
+h1{
+  background-color: rgb(122, 122, 240);
+  color: white;
+  font-size: x-large;
+}
+
+.columns-container{
+  border-style: solid;
+  border-color: rgb(172, 171, 171);
+  margin-bottom: 2px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+}
+
+
+
+
