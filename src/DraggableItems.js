@@ -3,10 +3,10 @@ import './DraggableItems.css';
 import { useState} from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-function DraggableItems({onDragEnd, columns}){
-
+function DraggableItems({onDragEnd, onDragStart, columns}){
+ //
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext  onDragStart={onDragStart} onDragEnd={onDragEnd}>
     <Droppable droppableId="columns">
       {(provided) => (
         <ul  {...provided.droppableProps} ref={provided.innerRef}>
