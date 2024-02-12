@@ -3,7 +3,7 @@ import React from 'react';
 const InputField = ({ label, value, onClear }) => {
   return (
     <div className='is-flex'>
-      <label className="subtitle is-info is-ellipsis mr-2" style={{ width: '30%' }}>
+      <label className="subtitle is-info is-ellipsis mr-2" style={{ width: '40%' }}>
         {label}
       </label>
       <input

@@ -25,7 +25,7 @@ function PlotterChart({ measureInputValue, dimensionInputValue }) {
           dimension: dimensionInputValue,
         };
         console.log("postdata: ",postData)
-        const response = await fetch('http://localhost:3001/data', {
+        const response = await fetch('https://plotter-task-8019e13a60ac.herokuapp.com/data', {  //http://localhost:3001/data
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -86,8 +86,8 @@ function PlotterChart({ measureInputValue, dimensionInputValue }) {
         },
       };
 
-      ctx.canvas.width = 550;
-      ctx.canvas.height = 350;
+      ctx.canvas.width = '100%';
+      ctx.canvas.height = '100%';
 
       const newChartInstance = new Chart(ctx, {
         type: 'line',

@@ -24,7 +24,7 @@ function App() {
 
   const fetchColumns = async () => {
     try {
-      const response = await fetch('http://localhost:3001/columns');
+      const response = await fetch('https://plotter-task-8019e13a60ac.herokuapp.com/columns');  //http://localhost:3001/columns
   
       if (!response.ok) {
         throw new Error('Response not OK');
@@ -119,7 +119,7 @@ function App() {
         
         
        
-        <div className="column is-full container" style={{ position: 'relative' }}>
+        <div className="column is-four-fifths container" style={{ position: 'relative' }}>
             <InputField 
               label = "Dimension"
               value = {dimensionInputValue} 

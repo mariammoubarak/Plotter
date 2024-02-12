@@ -18,7 +18,10 @@ This project is a Plotter App that allows users to drag and drop columns, select
 
     node proxy-server.js
 
-    If successful, you should see a message in the console: "Proxy server is running on http://localhost:3001".
+Note: If you face cross-origin issues during development, use the proxy server.
+(and replace the api path with the commented path that refer to the proxy-server) Otherwise, skip this step.
+
+If successful, you should see a message like "Proxy server is running on http://localhost:3001".
 
 ### Frontend Setup
 
