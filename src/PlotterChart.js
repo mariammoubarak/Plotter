@@ -1,28 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Chart } from 'chart.js/auto';
 
-function PlotterChart({ measureColumn, dimensionColumn }) {
+function PlotterChart({ measureInputValue, dimensionInputValue }) {
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState(null);
   let load = false;
   let error = null;
   
   useEffect(() => {
-    if (!measureColumn || !dimensionColumn) return;
+    // Destroy the existing chart instance if it exists
+    if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+    if (!measureInputValue || !dimensionInputValue) return;
 
     const fetchChartData = async () => {
       try {
         load = true;
         error = null;
 
-        // Destroy the existing chart instance if it exists
-        if (chartInstance) {
-          chartInstance.destroy();
-        }
-
         const postData = {
-          measures: [measureColumn],
-          dimension: dimensionColumn,
+          measures: [measureInputValue],
+          dimension: dimensionInputValue,
         };
         console.log("postdata: ",postData)
         const response = await fetch('http://localhost:3001/data', {
@@ -54,7 +54,7 @@ function PlotterChart({ measureColumn, dimensionColumn }) {
         labels: data[0].values,
         datasets: [
           {
-            label: 'Plotter',
+            label: data[1].name,
             data: data[1].values,
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 2,
@@ -100,7 +100,7 @@ function PlotterChart({ measureColumn, dimensionColumn }) {
 
     // Fetch chart data when the component mounts or when measureColumn or dimensionColumn changes
     fetchChartData();
-  }, [measureColumn, dimensionColumn]);
+  }, [measureInputValue, dimensionInputValue]);
 
   return (
     <div>

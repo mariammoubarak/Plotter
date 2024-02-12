@@ -2,25 +2,26 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import DraggableItems from './DraggableItems';
 import PlotterChart from './PlotterChart';
+import InputField from './InputField';
 
 function App() {
   //Create a state for columns, and the inputs field to track them
   const [columns, setColumns] = useState([]);
-  const [dimensionColumn, setDimensionColumn] = useState('');
-  const [measureColumn, setMeasureColumn] = useState('');
-  const [draggedItem, setdraggedItem] = useState('');
+  const [dimensionInputValue, setDimensionValue] = useState('');
+  const [measureInputValue, setMeasureValue] = useState('');
+  const [draggedItem, setDraggedItem] = useState('');
+  //Create state for both dimension and measure arrays to update the columns when item is drpped
   const [dimensionArray, setDimensionArray] =  useState([]); 
   const [measureArray, setMeasureArray] = useState([]); 
 
 
   //Fetch the columns and update the state as soon as the App mounts
   useEffect(() => {
-
-    
     
     fetchColumns();
 
   }, []);
+
   const fetchColumns = async () => {
     try {
       const response = await fetch('http://localhost:3001/columns');
@@ -53,38 +54,58 @@ function App() {
     }
   };
     
-  function clearInput(type){
+  //Update the state of the draggedItem 
+  function handleOnDragstrat(result) {
+  
+    const draggedItem = columns[result.source.index];
+    setDraggedItem(draggedItem);
+    
+  }
+
+  //Update input values and the columns accordingly
+  function handleOnDragEnd(result) {
+    
+    // If the dragged item is dropped in the same place, take no action.
+    if (!result.destination) {
+      let measureArrayWithoutDraggedItem = measureArray.filter(item => item.name !== draggedItem.name);
+      let dimesnsionArrayWithoutDraggedItem = dimensionArray.filter(item => item.name !== draggedItem.name);
+      
+      if (draggedItem.function === "measure") {
+        setMeasureValue(draggedItem.name);
+        
+        //update the columns displayed so that the dropped item is removed 
+        measureArrayWithoutDraggedItem = measureArray.filter(item => item.name !== draggedItem.name);
+        dimesnsionArrayWithoutDraggedItem = dimensionArray.filter(item => item.name !== dimensionInputValue);
+        
+        
+      } else if (draggedItem.function === "dimension") {
+        setDimensionValue(draggedItem.name);
+        
+        //update the columns displayed so that the dropped item is removed 
+        measureArrayWithoutDraggedItem = measureArray.filter(item => item.name !== measureInputValue);
+        dimesnsionArrayWithoutDraggedItem = dimensionArray.filter(item => item.name !== dimensionInputValue);
+        
+      }
+      setColumns([...dimesnsionArrayWithoutDraggedItem, ...measureArrayWithoutDraggedItem]);
+    }
+  }
+  
+  //Clear the input text and update the columns accordingly 
+  function handleOnClear(type){
+
+  // If the field is cleared, update the columns to display all items of this type and show
+  // the array of the other type, taking into account filtering when the other field is not empty.
+
     if(type === "measure"){
-      setMeasureColumn("");
-      setColumns([...dimensionArray.filter(item => item.name !== dimensionColumn), ...measureArray]);
+      setMeasureValue("");
+      setColumns([...dimensionArray.filter(item => item.name !== dimensionInputValue), ...measureArray]);
     }
     else if(type === "dimension"){
-      setDimensionColumn("");
-      setColumns([...dimensionArray, ...measureArray.filter(item => item.name !== measureColumn)]);
+      setDimensionValue("");
+      setColumns([...dimensionArray, ...measureArray.filter(item => item.name !== measureInputValue)]);
     }
   }
 
-  function handleOnDragEnd(result) {
-    if (!result.destination) {
-      const removedDraggedMeasureItem = measureArray.filter(item => item.name !== draggedItem.name);
-      const removedDraggedDimensionItem = dimensionArray.filter(item => item.name !== draggedItem.name);
-  
-      if (draggedItem.function === "measure") {
-        setMeasureColumn(draggedItem.name);
-        setColumns([...dimensionArray, ...removedDraggedMeasureItem]);
-      } else if (draggedItem.function === "dimension") {
-        setDimensionColumn(draggedItem.name);
-        setColumns([...removedDraggedDimensionItem, ...measureArray]);
-      }
-    }
-  }
-
-  function handleOnDragstrat(result) {
-
-    const draggedItem = columns[result.source.index];
-    setdraggedItem(draggedItem);
-   
-  }
 
   return (
     <div className="App">
@@ -99,43 +120,25 @@ function App() {
         
        
         <div className="column is-full container" style={{ position: 'relative' }}>
-          <div>
-            <div className='dimension is-flex'>
-              <label className='subtitle is-info is-ellipsis mr-2' style={{ width: '30%'}}>Dimension</label>
-              <input
-                className="input is-rounded is-info mr-2"
-                type="text"
-                value={dimensionColumn}
-                onDrop={() => handleOnDragEnd()}
-                onChange={(e) => setDimensionColumn(e.target.value)}
-                placeholder='Drop your dimension column'
+            <InputField 
+              label = "Dimension"
+              value = {dimensionInputValue} 
+              onClear ={() => handleOnClear("dimension")}
               />
-              <button className="button is-info is-small mt-1 is-hovered" onClick={() => clearInput("dimension")}>Clear</button>
-            </div>
-  
-            <div className='measure is-flex'>
-              <label className='subtitle is-info is-ellipsis mr-2' style={{ width: '30%', overflow: 'hidden' }}>Measure</label>
-              <input
-                className="input is-rounded is-info mr-2 "
-                type="text"
-                value={measureColumn}
-                onDrop={() => handleOnDragEnd()}
-                onChange={(e) => setMeasureColumn(e.target.value)}
-                placeholder='Drop your measure column'
+            <InputField 
+              label = "Measure"
+              value = {measureInputValue} 
+              onClear ={() => handleOnClear("measure")}
               />
-              <button className="button is-info is-small is-hovered mt-1" onClick={() => clearInput("measure")}>Clear</button>
-            </div>
 
             <div className="columns is-full">
-      <div className="column is-centered is-full">
-        <PlotterChart measureColumn={measureColumn} dimensionColumn={dimensionColumn}/>
-      </div>
-    </div>
-          </div>
+              <div className="column is-centered is-full">
+                <PlotterChart measureInputValue={measureInputValue} dimensionInputValue={dimensionInputValue}/>
+              </div>
+            </div>
+          
         </div>
 
-   
-       
       </div>
     </div>
   );
